@@ -1,12 +1,9 @@
 import { Router } from "express";
 export const mainroutes = Router();
+import RunCMD from "../controler/cmd";
 
-mainroutes.use((req, res, next) => {
-    res.locals.title = "Express App"
-    res.locals.session  = req.session    
-    next()
-  })
-mainroutes.post('/cmd',(req,res) => {
+mainroutes.post('/cmd',async (req,res) => {
     const command = req.body.command;
-    
+    const result = await RunCMD(command);
+    res.send({data: result});
 })

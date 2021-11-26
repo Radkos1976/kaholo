@@ -4,13 +4,13 @@
   "description": "Test funcionality of shell commands",
   "main": "app.js",
   "scripts": {
-    "start": "env PORT=9000 node src/index.js ",
+    "start": "node dist/app.js ",
     "test": "echo \"Error: no test specified\" && exit 1",
     "--- Compile TS --- ": "",
     "watch:ts": "tsc --watch",
     "--- Run compiled code --- ": "",
-    "watch": "nodemon --experimental-modules dist/index.js",
-    "watch:debug": "nodemon --inspect -- dist/index.js"
+    "watch": "nodemon --experimental-modules dist/app.js",
+    "watch:debug": "nodemon --inspect -- dist/app.js"
   },
   "author": "RADKOS",
   "license": "ISC",
@@ -25,6 +25,7 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.2",
     "file-stream-rotator": "^0.5.7",
     "helmet": "^4.6.0",
     "morgan": "^1.10.0",

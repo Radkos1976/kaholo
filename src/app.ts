@@ -35,7 +35,7 @@ const accessLogStream = FileStreamRotator.getStream({
   // Catch errors
   store.on('error', function(error) {
     console.log(error);
-  });
+  });  
   
   app.use(require('express-session')({
     secret: 'This is a secret',
@@ -46,3 +46,9 @@ const accessLogStream = FileStreamRotator.getStream({
     resave: true,
     saveUninitialized: true
   }));
+  const PORT = 8080;
+  const HOST = "localhost";
+  app.listen(PORT, HOST, () => {
+    console.log(`Server is listening on ${HOST}:${PORT}`);
+    process.send && process.send('ready')
+  });
