@@ -49,7 +49,12 @@ block content
                 try {             
                   $.post('/cmd',{cmd: command.toString()})
                   .done(function(data){
-                     $("#text-output").text(data.data.stdout);
+                    if (!data.data.stderr) {
+                      $("#text-output").text(data.data.stdout);
+                    } else {
+                      $("#text-output").text(data.data.stderr)
+                    }
+                    
                   });
                 } catch (err) {
                   updateTips('Error ' + err);
