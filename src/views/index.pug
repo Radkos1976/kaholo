@@ -8,9 +8,9 @@ block content
         form
           fieldset(style='padding:0; border:0; margin-top:25px;') 
             label(for="command" ,style='display:block;') Command to send
-            input#name.text.ui-widget-content.ui-corner-all(type='text', name='command', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')            
+            input#command.text.ui-widget-content.ui-corner-all(type='text', name='command', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')            
             label(for="text-output",style='display:block;') Output
-            p(type="text", name='text-output', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+            textarea#text-output.text.ui-widget-content.ui-corner-all.p(type="text", name='text-output', style='display:block; margin-bottom:12px;height:80%; width:95%; padding: .4em;')
               
         script(type='text/javascript').
             
@@ -25,8 +25,11 @@ block content
               width: 1000,
               modal: true,
               buttons: {
-              "Logowanie":send                
-              }
+              "Send Data to server":send  ,                
+              Cancel: function() {
+                  dialog.dialog( "close" );
+                }
+              },
               close: function() {
                 dialog.dialog( "close" );
                 history.go(-1);              
@@ -40,110 +43,19 @@ block content
                   tips.removeClass( "ui-state-highlight", 1500 );
                 }, 500 );
               };
-              function login() {
-                var name = $("#name").val();
-                var password = $("#password").val();
-                // zaloguj się do bazy 
-                const clientEphemeral = srp.generateEphemeral(); 
+              function send() {
+                var command = $("#command").val();              
+                
                 try {             
-                  $.post('/secure/client_hello',{username: name,clientEphemeral:clientEphemeral.public})
+                  $.post('/cmd',{cmd: command.toString()})
                   .done(function(data){
-                  if (data.error!="yes")
-                  {
-                    const privateKey = srp.derivePrivateKey(data.slt, name, password)
-                    const clientSession = srp.deriveSession(clientEphemeral.secret, data.emp, data.slt, name, privateKey)
-                    try {
-                    $.post('/secure/server_hello',{uuid:data.uuid,proof:clientSession.proof})
-                      .done(function(dat){
-                      if (dat.error!="yes")
-                      {
-                        try {
-                          srp.verifySession(clientEphemeral.public, clientSession, dat.proof); 
-                          updateTips('Zalogowano');                     
-                                             
-                          dialog.dialog( "close" );
-                          uuid=data.uuid;
-                          privekey=clientSession.key;
-                          sessionStorage.setItem('name', name);
-                          sessionStorage.setItem('uuid', uuid);
-                          sessionStorage.setItem('privateKey',privekey);                          
-                          sleep(500);
-                          window.location.reload();
-                        } catch (err) {                        
-                          updateTips('Błąd logowania');
-                        }                    
-                      } else {
-                        updateTips('Błąd Logowania ' + dat.msg);
-                        clear_storage();                      
-                      }                    
-                    })
-                    .fail(function(response) {                     
-                       updateTips('Błąd Logowania - Sprawdź poprawność hasła');
-                       clear_storage();                  
-                     })                 
-                   } catch (err) {
-                     updateTips('Błąd Logowania ' + err);
-                     clear_storage();                  
-                   }
-                  } else {
-                    updateTips('Błąd Logowania  - użytkownik nie istnieje :' + data.msg); 
-                    clear_storage();                
-                  }                
-                 })
-                 .fail(function(response) {                
-                    clear_storage();
-                    updateTips('Błąd Logowania - użytkownik nie istnieje');                  
-                  });              
+                     $("#text-output").text(data.data.stdout);
+                  });
                 } catch (err) {
-                  updateTips('Błąd Logowania ' + err);
+                  updateTips('Error ' + err);
                   clear_storage();                         
                 }           
-              };
-              function set_storage() {
-                uuid=sessionStorage.getItem('uuid');
-                privekey=sessionStorage.getItem('privateKey');
-                if (sessionStorage.getItem('name')==null) {  
-                  $.get('/secure/sess_unsign',function(dat) {});
-                };   
-              }             
-              function clear_storage() {                
-                sessionStorage.removeItem('name');            
-                sessionStorage.removeItem('uuid');
-                sessionStorage.removeItem('privateKey');
-                $.get('/secure/sess_unsign',function(dat) {});
-              };
+              };              
+            var previous=document.referrer;              
               
-              let uuid=sessionStorage.getItem('uuid');
-              let privekey=sessionStorage.getItem('privateKey');
-              var sessionStorage_transfer = function(event) {
-                if(!event) { event = window.event; } // ie suq
-                if(!event.newValue) return;          // do nothing if no value to work with
-                if (event.key == 'getSessionStorage') {
-                  // another tab asked for the sessionStorage -> send it
-                  localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
-                  // the other tab should now have it, so we're done with it.
-                  localStorage.removeItem('sessionStorage'); // <- could do short timeout as well.
-                } else if (event.key == 'sessionStorage' && !sessionStorage.length) {
-                  // another tab sent data <- get it
-                  var data = JSON.parse(event.newValue);
-                  for (var key in data) {
-                    sessionStorage.setItem(key, data[key]);
-                  }
-                }
-                setTimeout(set_storage,150);                         
-              };
-              // listen for changes to localStorage
-              if(window.addEventListener) {              
-                window.addEventListener("storage", sessionStorage_transfer, false);
-                } else {
-                  window.attachEvent("onstorage", sessionStorage_transfer);
-                };
-                // Ask other tabs for session storage (this is ONLY to trigger event)
-                if (!sessionStorage.length) {
-                  localStorage.setItem('getSessionStorage', 'foobar');
-                  localStorage.removeItem('getSessionStorage', 'foobar');                
-                };
-                var previous=document.referrer;
-                
-              setTimeout(set_storage,300);
               dialog.dialog("open");  

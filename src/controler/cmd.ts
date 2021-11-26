@@ -1,11 +1,12 @@
 import { spawn } from "child_process";
 const comm = require("../model/command");
 
-export default function RunCMD( StrCommand: string ) {
+function RunCMD( StrCommand: string ) {
     // *** Return the promise
     return new Promise(function (resolve, reject) {
-      const param= comm.GetCommand(command);      
-      const process = spawn(param.command, param.args);
+      console.log('Im here');
+      const param= comm.GetCommand(StrCommand);      
+      const process = spawn(param.command, param.args,{shell:true});
       var output='';
       var Erroutput='';
       process.on('close', function (code) { // Should probably be 'exit', not 'close'
@@ -25,4 +26,13 @@ export default function RunCMD( StrCommand: string ) {
         reject(err);
       });
     });
-  }
+}
+async function get(options:string) {
+  var data ={}
+  const result=await RunCMD(options);
+  
+  return result
+}
+module.exports = {
+  SendCommand: (options:string) => get(options)
+};

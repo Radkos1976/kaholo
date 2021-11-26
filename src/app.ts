@@ -4,6 +4,7 @@ import express from "express"
 import helmet from "helmet"
 import path from "path"
 import cookieParser from "cookie-parser"
+import bodyParser from 'body-parser';
 import fs from "fs"
 import loger from "morgan"
 import { mainroutes } from './routes/page';
@@ -28,8 +29,11 @@ const accessLogStream = FileStreamRotator.getStream({
   app.set('views', './src/views');
   app.set('view engine', 'pug');
   app.use(cookieParser());
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
   app.use('/', mainroutes);
   app.use(helmet());
+  app.use(express.json());
   app.use(loger(':date[iso] :method :remote-addr :url :status :response-time ', {stream: accessLogStream }));
   
   // Catch errors
