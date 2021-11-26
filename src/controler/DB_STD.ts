@@ -13,7 +13,7 @@ async function SaveDTA (data:any) {
         });
       });
       
-}
+    }
 module.exports = {
     SaveDBlog: (options:any) => SaveDTA(options)
   }; 
