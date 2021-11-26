@@ -1,0 +1,14 @@
+{
+  "name": "kaholo",
+  "version": "1.0.0",
+  "description": "Test funcionality of shell commands",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "RADKOS",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
