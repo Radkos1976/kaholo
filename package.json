@@ -9,6 +9,16 @@
   "author": "RADKOS",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "@types/express": "^4.17.13",
+    "@types/express-minify": "^0.1.35",
+    "@types/express-session": "^1.17.4",
+    "@types/helmet": "^4.0.0",
+    "@types/morgan": "^1.9.3",
+    "@types/node": "^16.11.10",
+    "express": "^4.17.1",
+    "helmet": "^4.6.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15",
+    "typescript": "^4.5.2"
   }
 }
