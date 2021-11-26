@@ -1,6 +1,6 @@
 import { spawn } from "child_process";
 const comm = require("../model/command");
-const saveDTA = require("../controler/db_std");
+const saveDTA = require("../controler/db_stdHist");
 
 function RunCMD( StrCommand: string ) {
     // *** Return the promise
