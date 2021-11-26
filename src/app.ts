@@ -25,7 +25,7 @@ const accessLogStream = FileStreamRotator.getStream({
     frequency: 'daily',
     verbose: false
   })
-  app.set('views', path.join(__dirname, 'views'));
+  app.set('views', './src/views');
   app.set('view engine', 'pug');
   app.use(cookieParser());
   app.use('/', mainroutes);
@@ -35,8 +35,7 @@ const accessLogStream = FileStreamRotator.getStream({
   // Catch errors
   store.on('error', function(error) {
     console.log(error);
-  });  
-  
+  }); 
   app.use(require('express-session')({
     secret: 'This is a secret',
     cookie: {
@@ -46,6 +45,10 @@ const accessLogStream = FileStreamRotator.getStream({
     resave: true,
     saveUninitialized: true
   }));
+
+  app.use('/jquery', express.static('./node_modules/jquery/dist')); //jquery.js
+  app.use('/jquery-ui', express.static('./node_modules/jquery-ui-dist')); //jquery-ui.js ;jquery-ui.css ;jquery-ui.theme.css
+
   const PORT = 8080;
   const HOST = "localhost";
   app.listen(PORT, HOST, () => {

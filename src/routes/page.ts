@@ -7,3 +7,6 @@ mainroutes.post('/cmd',async (req,res) => {
     const result = await RunCMD(command);
     res.send({data: result});
 })
+mainroutes.get('/',async (req,res) => {
+    res.render('index');
+})
